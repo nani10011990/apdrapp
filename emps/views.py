@@ -1195,26 +1195,26 @@ def apd_abr_calculations(request):
 #los ratio factor---------------------------------------------------------------------------------------------------
     b=get_apd_lossratio_by_quote_id_coverage_db(_quote_id,2)
     
-    
     c=[]
     
-  
-    for i in b :
-        
-        if i['loss_ratio']<=10:
-            c.append(1.00)
-        elif i['loss_ratio']>10 and i['loss_ratio']<=25:
-            c.append(1.05)
-        elif i['loss_ratio']>25 and i['loss_ratio']<=50:
-            c.append(1.10)
-        elif i['loss_ratio']>50 :
-            c.append(1.20)
-              
-
-    if len(c)>1:
-        c=(max(c))
+    if b==[]:
+        c=1.00
     else:
-        pass
+        for i in b :
+        
+            if i['loss_ratio']<=10:
+                c.append(1.00)
+            elif i['loss_ratio']>10 and i['loss_ratio']<=25:
+                c.append(1.05)
+            elif i['loss_ratio']>25 and i['loss_ratio']<=50:
+                c.append(1.10)
+            elif i['loss_ratio']>50 :
+                c.append(1.20)
+            if len(c)>1:
+                c=(max(c))
+            else:
+                pass
+              
     
     print(c,"the array value")
     loss_exp_factor=c
