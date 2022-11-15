@@ -47,6 +47,7 @@ urlpatterns = [
     path('getapdtotalincurredfactor',views.get_apd_total_incurred_factor,name='get_apd_total_incurred_factor'),
     path('calculatedriverfactor',views.calculate_driver_factor,name='calculate_driver_factor'),
     path('getapdbaseratefactor',views.get_apd_base_rate_factor,name='get_apd_base_rate_factor'),
+    path('getapdrallfactors',views.get_apdr_factors,name='get_apdr_factors'),
     path('getapddeductiblefactor',views.get_apd_deductible_factor,name='get_apd_deductible_factor'),
     path('getapdstatefactor',views.get_apd_state_factor,name='get_apd_state_factor'),
     path('apdrmfcalculations',views.apd_rmf_calculations,name='apd_rmf_calculations'),

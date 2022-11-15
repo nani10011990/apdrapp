@@ -926,6 +926,7 @@ def get_apd_broker_fee(pd_premium):
     
     return result
 
+
 def get_apd_towing_charges(towing_limit):
     try:
         dbConnection= connections['default'].cursor()
@@ -943,6 +944,7 @@ def get_apd_towing_charges(towing_limit):
         s_id = -1
     
     return result
+
 
 def get_apd_lossratio_by_quote_id_coverage_db(quote_id,coverage):
     result=[]
@@ -1085,3 +1087,79 @@ def get_apd_tiv_factor_db(quote_id,tiv):
   except (Exception, psycopg2.DatabaseError) as error:           
            u_id=-1          
   return  factor
+
+
+def  get_apdr_factors_db():
+        data=[]
+        try:
+            
+            dbConnection= connections['default'].cursor()
+            query= dbConnection.mogrify("SELECT public.udf_apdr_factors_get();", ())
+            dbConnection.execute(query)
+            rows=dbConnection.fetchall()
+            #print(type(rows))
+            #print(type(rows[0]))
+           
+            if len(rows)>0:
+              for r in rows:
+                data.append(r[0])
+            print(data,"the data sis ")       
+        except (Exception, psycopg2.DatabaseError) as error:
+           print(error)
+           #u_id=-1
+        print(data)       
+        return   data
+def add_apdr_factors_db(apdr_factor_modals):
+       user_id=-1
+       
+   
+       try: 
+            dbConnection= connections['default'].cursor()
+            query= dbConnection.mogrify("select public.udf_apdr_factors(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s );", (apdr_factor_modals.loss_exp_factor,
+            apdr_factor_modals.total_incurred_factor,
+            apdr_factor_modals.driver_factor,
+            apdr_factor_modals.radius_factor,
+            apdr_factor_modals.years_of_experience_factor,
+            apdr_factor_modals.base_rate_factor,
+            apdr_factor_modals.rate_control_factor,
+            apdr_factor_modals.uw_debit_credit,
+            apdr_factor_modals.tiv_factor,
+            apdr_factor_modals.abr_rmf_calculation,
+            apdr_factor_modals.deductible_rate,
+            apdr_factor_modals.state_factor,   
+            apdr_factor_modals.abr_calculation,
+            apdr_factor_modals.total_premium,   
+            apdr_factor_modals.broker_fee,
+            apdr_factor_modals.towing_fee,
+            apdr_factor_modals.apd_premium,
+            apdr_factor_modals.abr_rmf
+
+
+        
+        
+
+
+            
+             ))
+            dbConnection.execute(query)
+            rows=dbConnection.fetchall()
+            #print(type(rows))
+            #print(type(rows[0]))
+            print(rows[0],"the db values ")
+            print(len(rows),"the rows length ")
+            if len(rows)>0:
+              user_id=rows[0][0]
+              if user_id>-1 :
+                    res="SUCCESS"
+              else:
+                    res="FAILURE"
+               
+      
+           
+        
+       except (Exception, psycopg2.DatabaseError) as error:
+           
+           u_id=-1
+           print(error)
+           res="Internal Server Error"
+       return  res

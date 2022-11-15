@@ -25,7 +25,7 @@ from .premiumcalculation import *
 from django.conf import settings
 from django.core.files import File
 from django.http import FileResponse
-from .dboperations import      get_all_lobs, get_apd_base_rate_factor_json, get_apd_broker_fee, get_apd_data_for_incurred_factor_db, get_apd_deductible_factor_json, get_apd_lossratio_by_quote_id_coverage_db, get_apd_radius_factor_db, get_apd_state_factor_json, get_apd_tiv_factor_db, get_apd_towing_charges, get_current_approval_db, get_data_by_zip_code_db, get_highlander_al_safer_factor_json, get_highlander_auto_hired, get_hired_auto_db, get_ins_highlander_al_deductible_factor, get_ins_quotes_json_data_by_quote_id, get_lcm_usic_factor_db, get_lossratio_by_quote_id_coverage_db, get_no_of_units_ins_vehicles_db, get_primary_usic_factor, get_range_from_ins_highlander_pollution_factor_json, get_rate_by_org_code_db, get_sn_local_intermediate_db, get_sum_of_statedamount_by_quoteid_json, get_udf_al_uim_premium_db, get_udf_al_um_premium_db, get_udf_get_al_base_rate_zone_by_state_json, get_um_limit_db,   get_usic_al_deductible_factor_db, get_usic_commission_tier_db, get_usic_factors_db, get_usic_fleet_factor_db, get_usic_fmcsa_factor_db, get_usic_hired_auto_premium_db, get_usic_ilf_factor_db, get_usic_liability_limit_factor_db, get_usic_pip_limit_db, get_usic_safer_factor_db, get_usic_state_city_by_zipcode_db, get_usic_state_zone_regional_factor_db, get_usic_states_factor_db, get_usic_years_of_experience_factor_db, get_vehicle_factor_by_weight_and_model_db, get_yrs_of_exp_db, ins_approvals_post
+from .dboperations import      add_apdr_factors_db, get_all_lobs, get_apd_base_rate_factor_json, get_apd_broker_fee, get_apd_data_for_incurred_factor_db, get_apd_deductible_factor_json, get_apd_lossratio_by_quote_id_coverage_db, get_apd_radius_factor_db, get_apd_state_factor_json, get_apd_tiv_factor_db, get_apd_towing_charges, get_apdr_factors_db, get_current_approval_db, get_data_by_zip_code_db, get_highlander_al_safer_factor_json, get_highlander_auto_hired, get_hired_auto_db, get_ins_highlander_al_deductible_factor, get_ins_quotes_json_data_by_quote_id, get_lcm_usic_factor_db, get_lossratio_by_quote_id_coverage_db, get_no_of_units_ins_vehicles_db, get_primary_usic_factor, get_range_from_ins_highlander_pollution_factor_json, get_rate_by_org_code_db, get_sn_local_intermediate_db, get_sum_of_statedamount_by_quoteid_json, get_udf_al_uim_premium_db, get_udf_al_um_premium_db, get_udf_get_al_base_rate_zone_by_state_json, get_um_limit_db,   get_usic_al_deductible_factor_db, get_usic_commission_tier_db, get_usic_factors_db, get_usic_fleet_factor_db, get_usic_fmcsa_factor_db, get_usic_hired_auto_premium_db, get_usic_ilf_factor_db, get_usic_liability_limit_factor_db, get_usic_pip_limit_db, get_usic_safer_factor_db, get_usic_state_city_by_zipcode_db, get_usic_state_zone_regional_factor_db, get_usic_states_factor_db, get_usic_years_of_experience_factor_db, get_vehicle_factor_by_weight_and_model_db, get_yrs_of_exp_db, ins_approvals_post
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
 
@@ -759,13 +759,13 @@ def apd_broker_fee(request):
 @api_view(['POST'])
 def apd_towing_charges(request):
    
-    req_data = json.loads(request.body.decode("utf-8"))
-    towing_limit = req_data["towing_limit"]
+    data = json.loads(request.body.decode("utf-8"))
+    towing_limit = data["towing_limit"]
    
-    db_data  = get_apd_towing_charges(towing_limit)
-    res =db_data
-    towing_charge = res[0]["apd_towing_charges"]
-    data = {"towing charges": towing_charge  }
+    towing_charges = get_apd_towing_charges(towing_limit)
+    res =towing_charges
+    print(int(res[0]["apd_towing_charges"]),"the res value is ")
+    data = {"towing charges": res }
     return Response(data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
@@ -818,8 +818,12 @@ def get_apd_total_incurred_factor(request):
     c=[]
     d=[]
     
-    
     b=get_apd_data_for_incurred_factor_db(_quote_id,2)
+    print(b,type(b),"the values are")
+
+    if b==[]:
+        c=1.00
+
     for i in b:
         d.append(i['total_incurred_amount']/i['units'])
         if i['total_incurred_amount']/i['units']<=50000:
@@ -991,7 +995,7 @@ def apd_rmf_calculations(request):
     deductible = data["deductible"]
     state = data["state"]
 #rate control factor---------------------------------------------------------------------------------------------------------
-    rate_control_factor=1
+    #rate_control_factor=1
 #years of experience ----------------------------------------------------------------------------------------------
     years_experience_val = get_yrs_of_exp_db(years_id)
     years_of_experience_factor=years_experience_val["factor"]
@@ -1161,6 +1165,11 @@ def apd_rmf_calculations(request):
 
     return Response(data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def get_apdr_factors(request):
+    res=get_apdr_factors_db()
+    data={"result":res}
+    return   Response(data, status=status.HTTP_200_OK) 
 @api_view(['POST'])
 def apd_abr_calculations(request):
     data = json.loads(request.body.decode("utf-8"))
@@ -1171,8 +1180,13 @@ def apd_abr_calculations(request):
     tiv=data["tiv"]
     deductible = data["deductible"]
     state = data["state"]
+    towing_limit = data["towing_limit"]
+    pd_premium = data["pd_premium"]
+    rate_control_factor=float(data["rate_control_factor"])
+    print("the quote id is",_quote_id,type(_quote_id),"years id value is ",years_id,type(years_id),"radius id value is",radius_id,type(radius_id),"uw debit credit factor is",uw_debit_credit,type(uw_debit_credit),"tiv value is ",tiv,type(tiv),"deductibel factor is",deductible,type(deductible),"state value is",state,type(state),"the towing limit is",towing_limit,type(towing_limit),"the pd premium",pd_premium,type(pd_premium))
+
 #rate control factor---------------------------------------------------------------------------------------------------------
-    rate_control_factor=1
+    #rate_control_factor=1
 #years of experience ----------------------------------------------------------------------------------------------
     years_experience_val = get_yrs_of_exp_db(years_id)
     years_of_experience_factor=years_experience_val["factor"]
@@ -1287,6 +1301,10 @@ def apd_abr_calculations(request):
     
     
     b=get_apd_data_for_incurred_factor_db(_quote_id,2)
+    print(b,"the b value is ")
+    if b==[]:
+        total_incurred_factor=1
+
     for i in b:
         d.append(i['total_incurred_amount']/i['units'])
         if i['total_incurred_amount']/i['units']<=50000:
@@ -1298,16 +1316,20 @@ def apd_abr_calculations(request):
             c=[1.00,1.05,1.10,1.15]
             break
 
-    total_incurred_factor=c[0]
-    total_incurred_factor=float(total_incurred_factor)
-    print(total_incurred_factor,"total_incurred_factor values are",type(total_incurred_factor))
+        total_incurred_factor=c[0]
+        total_incurred_factor=float(total_incurred_factor)
+    #print(total_incurred_factor,"total_incurred_factor values are",type(total_incurred_factor))
 
 #base rate-----------------------------------------------------------------------------------------------------------
     sum_of_statedamount = get_sum_of_statedamount_by_quoteid_json(_quote_id)
     
     factor = get_apd_base_rate_factor_json(sum_of_statedamount['sum'])
-    base_rate_factor=factor["factor"]
-    base_rate_factor=float(base_rate_factor)
+    if factor==-1:
+        base_rate_factor=1
+    else:
+        base_rate_factor=factor["factor"]
+     
+        base_rate_factor=float(base_rate_factor)
 
     print("base rate values are:",base_rate_factor,type(base_rate_factor))
 #Radius factor------------------------------------------------------------------------------------------------------------
@@ -1322,7 +1344,7 @@ def apd_abr_calculations(request):
     print("tiv factor",tiv_factor,type(tiv_factor))
 
     deductible_rate = get_apd_deductible_factor_json(deductible)["rate"]
-    print('deductible_rate',deductible_rate)
+    print('deductible_rate',deductible_rate,type(deductible_rate))
 
     state_factor = get_apd_state_factor_json(state)["factor"]
     print("state factor",state_factor)
@@ -1333,11 +1355,32 @@ def apd_abr_calculations(request):
     #print(loss_exp_factor,"loss_exp_factor")
  #   print(total_incurred_factor,"total_incurred_factor")
    # print(radius_factor,"radius_factor")
-    abr_factors=loss_exp_factor*total_incurred_factor*driver_factor*radius_factor*years_of_experience_factor*base_rate_factor*rate_control_factor*int(uw_debit_credit)*tiv_factor
-    abr_factors = abr_factors + deductible_rate +state_factor
+    abr_rmf_calculation=round(loss_exp_factor*total_incurred_factor*driver_factor*radius_factor*years_of_experience_factor*base_rate_factor*rate_control_factor*float(uw_debit_credit)*tiv_factor,3)
+    abr_calculation = round(abr_rmf_calculation + deductible_rate +state_factor,3)
 
-    data={"abr_calculation":abr_factors}
+    abr_rmf=abr_calculation
+#total premium----------------------------------------------------------------------------------------------------------------   
+    
+    
+    total_premium=round((abr_calculation*float(tiv))/100,0)
+#premium fees------------------------------------------------------------------------------------------------------------------
+    broker_fee=get_apd_broker_fee(pd_premium)
+    towing_fee=get_apd_towing_charges(towing_limit)
+    broker_fee=int(broker_fee[0]["apd_broker_fee_fee"])
+    towing_fee=int(towing_fee[0]["apd_towing_charges"])
+    apd_premium=round(total_premium+broker_fee+towing_fee,0)
+    usr=apdr_factor_modals(loss_exp_factor,total_incurred_factor,driver_factor,radius_factor,
+    years_of_experience_factor,base_rate_factor,rate_control_factor,uw_debit_credit,tiv_factor,abr_rmf_calculation,deductible_rate,state_factor,abr_calculation ,total_premium,broker_fee,towing_fee,apd_premium,abr_rmf)
+    apdr_all_data=add_apdr_factors_db(usr)
+    print("broker fees",broker_fee,type(broker_fee),"towing fee",towing_fee,type(towing_fee))
+    print("apd premium is",apd_premium,type(apd_premium))
+    data={"abr_calculation":abr_calculation,"total_premium":total_premium,"apd_premium":apd_premium}
     print("abr calculations are",data)
 
 
     return Response(data, status=status.HTTP_200_OK)
+
+
+
+
+    
