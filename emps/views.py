@@ -772,38 +772,28 @@ def apd_towing_charges(request):
 def get_apd_loss_ratio_factor(request):
     data = json.loads(request.body.decode("utf-8"))
     
-    _quote_id=data['quote_id']
-    print(_quote_id,"the _quote_id is ")
-
-    b=get_apd_lossratio_by_quote_id_coverage_db(_quote_id,2)
-    
-    
-    c=[]
-    
-  
-    for i in b :
-        
-        if i['loss_ratio']<=10:
-            c.append(1.00)
-        elif i['loss_ratio']>10 and i['loss_ratio']<=25:
-            c.append(1.05)
-        elif i['loss_ratio']>25 and i['loss_ratio']<=50:
-            c.append(1.10)
-        elif i['loss_ratio']>50 :
-            c.append(1.20)
-              
-
-    if len(c)>1:
-        c=(max(c))
-    else:
-        pass
-    
-    res={"LOSS_FREQUENCY  ":c}
-    res=c
-    print("the loss frequency factor is ",res)
-
        
-    return   Response({"result":res}) 
+    
+    _quote_id=data['quote_id']
+    print(_quote_id,"the _quote_id is")
+    #_coverage=data['coverage']
+    b=get_lossratio_by_quote_id_coverage_db(_quote_id,2)
+    c=[]
+    if len(b)>0:
+        c=1.20
+    else:
+        c=1
+    
+    res=c
+  
+    for i in b:
+        if i['loss_ratio']>35:
+            # 1 is for Liability, for USIC we only have AL
+          d=ins_approvals_post(_quote_id,4) 
+          print(d,"the approval")
+   
+    data={"result": res} 
+    return   Response(data, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def get_apd_total_incurred_factor(request):
@@ -1193,33 +1183,34 @@ def apd_abr_calculations(request):
     #years_of_experience_factor=float(years_of_experience_factor)
     print("the years of experience factor are",years_of_experience_factor,type(years_of_experience_factor))
 #los ratio factor---------------------------------------------------------------------------------------------------
-    b=get_apd_lossratio_by_quote_id_coverage_db(_quote_id,2)
+    # b=get_apd_lossratio_by_quote_id_coverage_db(_quote_id,2)
     
-    c=[]
+    # c=[]
     
-    if b==[]:
-        c=1.00
-    else:
-        for i in b :
+    # if b==[]:
+    #     c=1.00
+    # else:
+    #     for i in b :
         
-            if i['loss_ratio']<=10:
-                c.append(1.00)
-            elif i['loss_ratio']>10 and i['loss_ratio']<=25:
-                c.append(1.05)
-            elif i['loss_ratio']>25 and i['loss_ratio']<=50:
-                c.append(1.10)
-            elif i['loss_ratio']>50 :
-                c.append(1.20)
-            if len(c)>1:
-                c=(max(c))
-            else:
-                pass
+    #         if i['loss_ratio']<=10:
+    #             c.append(1.00)
+    #         elif i['loss_ratio']>10 and i['loss_ratio']<=25:
+    #             c.append(1.05)
+    #         elif i['loss_ratio']>25 and i['loss_ratio']<=50:
+    #             c.append(1.10)
+    #         elif i['loss_ratio']>50 :
+    #             c.append(1.20)
+    #         if len(c)>1:
+    #             c=(max(c))
+    #         else:
+    #             pass
               
     
-    print(c,"the array value")
-    loss_exp_factor=c
-    print(loss_exp_factor,"the loss_exp_factor")
-    loss_exp_factor=loss_exp_factor
+    # print(c,"the array value")
+    loss_ratio= data["loss_ratio"]
+    print(loss_ratio,"the loss_ratio")
+    loss_exp_factor=float(loss_ratio)
+ 
 
     print(type(loss_exp_factor),"loss exp factor value",loss_exp_factor)
 #total incurred factor -----------------------------------------------------------------
