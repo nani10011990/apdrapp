@@ -1046,7 +1046,8 @@ def get_apd_state_factor_json(state):
         dbConnection.execute(query)           
         rows=dbConnection.fetchall()
         if len(rows)>0:
-            factor=rows[0][0]   
+            factor=rows[0][0].get('factor')
+        print(factor,"the factor is")  
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
         factor= -1          

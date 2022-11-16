@@ -1171,9 +1171,9 @@ def apd_abr_calculations(request):
     deductible = data["deductible"]
     state = data["state"]
     towing_limit = data["towing_limit"]
-    pd_premium = data["pd_premium"]
+    #pd_premium = data["pd_premium"]
     rate_control_factor=float(data["rate_control_factor"])
-    print("the quote id is",_quote_id,type(_quote_id),"years id value is ",years_id,type(years_id),"radius id value is",radius_id,type(radius_id),"uw debit credit factor is",uw_debit_credit,type(uw_debit_credit),"tiv value is ",tiv,type(tiv),"deductibel factor is",deductible,type(deductible),"state value is",state,type(state),"the towing limit is",towing_limit,type(towing_limit),"the pd premium",pd_premium,type(pd_premium))
+   # print("the quote id is",_quote_id,type(_quote_id),"years id value is ",years_id,type(years_id),"radius id value is",radius_id,type(radius_id),"uw debit credit factor is",uw_debit_credit,type(uw_debit_credit),"tiv value is ",tiv,type(tiv),"deductibel factor is",deductible,type(deductible),"state value is",state,type(state),"the towing limit is",towing_limit,type(towing_limit),"the pd premium",pd_premium,type(pd_premium))
 
 #rate control factor---------------------------------------------------------------------------------------------------------
     #rate_control_factor=1
@@ -1336,8 +1336,11 @@ def apd_abr_calculations(request):
 
     deductible_rate = get_apd_deductible_factor_json(deductible)["rate"]
     print('deductible_rate',deductible_rate,type(deductible_rate))
-
-    state_factor = get_apd_state_factor_json(state)["factor"]
+    if state=='CA'or state=='NJ' or state=='FL' or state=='IL':
+        state_factor = get_apd_state_factor_json(state)
+    else:
+        state_factor=0
+    print(state_factor,"stat fjkll")
     print("state factor",state_factor)
     
 #-----------------------------------------------------------------------------------------------------------------------------
@@ -1355,7 +1358,7 @@ def apd_abr_calculations(request):
     
     total_premium=round((abr_calculation*float(tiv))/100,0)
 #premium fees------------------------------------------------------------------------------------------------------------------
-    broker_fee=get_apd_broker_fee(pd_premium)
+    broker_fee=get_apd_broker_fee(int(total_premium))
     towing_fee=get_apd_towing_charges(towing_limit)
     broker_fee=int(broker_fee[0]["apd_broker_fee_fee"])
     towing_fee=int(towing_fee[0]["apd_towing_charges"])
