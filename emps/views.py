@@ -1071,7 +1071,7 @@ def apd_rmf_calculations(request):
         elif driver_score <= 2:
             initial_driver_factor *= 1.05
         elif driver_score <= 3:
-            initial_driver_factor *= 1.35
+            initial_driver_factor *= 1.25
         elif driver_score <= 4:
             initial_driver_factor *= 1.4
         elif driver_score <= 5:
