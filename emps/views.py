@@ -1384,8 +1384,9 @@ def apd_abr_calculations(request):
     #print(loss_exp_factor,"loss_exp_factor")
  #   print(total_incurred_factor,"total_incurred_factor")
    # print(radius_factor,"radius_factor")
-    abr_rmf_calculation=round(loss_exp_factor*total_incurred_factor*driver_factor*radius_factor*years_of_experience_factor*base_rate_factor*rate_control_factor*float(uw_debit_credit)*tiv_factor,3)
-    abr_calculation = round(abr_rmf_calculation + deductible_rate +state_factor,3)
+    abr_rmf_calculation=round(loss_exp_factor*total_incurred_factor*driver_factor*radius_factor*years_of_experience_factor*rate_control_factor*float(uw_debit_credit)*tiv_factor,3)
+    print(abr_rmf_calculation,"the abr_rmf_calculation is ")
+    abr_calculation = round((abr_rmf_calculation*base_rate_factor) + deductible_rate +state_factor,3)
 
     abr_rmf=abr_calculation
 #total premium----------------------------------------------------------------------------------------------------------------   
