@@ -1,27 +1,42 @@
- 
 from django.db import models
 
-# Create your models here.
-class usic_factor_modals:
-    def __init__(self,years_experience_factor,cargo_factor,rmf_factors,mtc_deductable_factor,RateControlFactor,UW_Credit_Debit,driver_factor,base_rate,loss_frequency_factor,total_cargo_premium,fleet_factor,per_unit_price):
-        self.years_experience_factor=years_experience_factor
-        self.cargo_factor=cargo_factor
-        self.rmf_factors=rmf_factors
-        self.mtc_deductable_factor=mtc_deductable_factor
-        self.RateControlFactor=RateControlFactor
-        self.UW_Credit_Debit=UW_Credit_Debit
+ 
+class apdr_factor_modals:
+    def __init__(self,loss_exp_factor,total_incurred_factor,driver_factor,radius_factor,years_of_experience_factor,base_rate_factor,rate_control_factor,uw_debit_credit,tiv_factor,abr_rmf_calculation,deductible_rate,
+    state_factor,abr_calculation,total_premium,broker_fee,towing_fee,apd_premium,abr_rmf):
+        self.loss_exp_factor=loss_exp_factor
+        self.total_incurred_factor=total_incurred_factor
         self.driver_factor=driver_factor
-        self.base_rate=base_rate
-        self.loss_frequency_factor=loss_frequency_factor
-        self.total_cargo_premium=total_cargo_premium
-        self.fleet_factor=fleet_factor
-        self.per_unit_price=per_unit_price
+        self.radius_factor=radius_factor
+        self.years_of_experience_factor=years_of_experience_factor
+        self.base_rate_factor=base_rate_factor
+        self.rate_control_factor=rate_control_factor
+        self.uw_debit_credit=uw_debit_credit
+        self.tiv_factor=tiv_factor
+        self.abr_rmf_calculation =abr_rmf_calculation
+        self.deductible_rate=deductible_rate 
+        self.state_factor=state_factor
+        self.abr_calculation =abr_calculation 
+        self.total_premium=total_premium
+        self.broker_fee=broker_fee
+        self.towing_fee=towing_fee
+        self.apd_premium=apd_premium
+        self.abr_rmf=abr_rmf
+
+
+
+
+
+
+
+      
          
-         
-         
- 
 
  
-
-
+# class usic_factor_modals:
+#     def __init__(self,years_experience_factor):
+#         self.years_experience_factor=years_experience_factor
         
+
+    
+         
