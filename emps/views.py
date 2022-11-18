@@ -1217,7 +1217,7 @@ def apd_abr_calculations(request):
 
 
 #driver
-    get_drivers = get_ins_quotes_json_data_by_quote_id(1000344)
+    get_drivers = get_ins_quotes_json_data_by_quote_id(_quote_id)
     total_drivers_factors = 0
 
     # print(drivers[0][0]['quote_submit_data']['drivers'])
