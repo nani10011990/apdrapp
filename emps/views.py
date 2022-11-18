@@ -1348,7 +1348,8 @@ def apd_abr_calculations(request):
 
 #base rate-----------------------------------------------------------------------------------------------------------
     sum_of_statedamount = get_sum_of_statedamount_by_quoteid_json(_quote_id)
-    
+    tiv=sum_of_statedamount["sum"]
+    print(tiv,type(tiv),"the tiv value ")
     factor = get_apd_base_rate_factor_json(sum_of_statedamount['sum'])
     if factor==-1:
         base_rate_factor=1
