@@ -1202,7 +1202,8 @@ def apd_abr_calculations(request):
     years_id = data["years_id"]
     radius_id=data["radius_id"]
     uw_debit_credit=data["uw_debit_credit"]
-    tiv=data["tiv"]
+    tiv=int(data["tiv"])
+    print(tiv,"the frontend values are ")
     deductible = data["deductible"]
     state = data["state"]
     towing_limit = data["towing_limit"]
@@ -1218,30 +1219,7 @@ def apd_abr_calculations(request):
     #years_of_experience_factor=float(years_of_experience_factor)
     print("the years of experience factor are",years_of_experience_factor,type(years_of_experience_factor))
 #los ratio factor---------------------------------------------------------------------------------------------------
-    # b=get_apd_lossratio_by_quote_id_coverage_db(_quote_id,2)
-    
-    # c=[]
-    
-    # if b==[]:
-    #     c=1.00
-    # else:
-    #     for i in b :
-        
-    #         if i['loss_ratio']<=10:
-    #             c.append(1.00)
-    #         elif i['loss_ratio']>10 and i['loss_ratio']<=25:
-    #             c.append(1.05)
-    #         elif i['loss_ratio']>25 and i['loss_ratio']<=50:
-    #             c.append(1.10)
-    #         elif i['loss_ratio']>50 :
-    #             c.append(1.20)
-    #         if len(c)>1:
-    #             c=(max(c))
-    #         else:
-    #             pass
-              
-    
-    # print(c,"the array value")
+     
     loss_ratio= data["loss_ratio"]
     print(loss_ratio,"the loss_ratio")
     loss_exp_factor=float(loss_ratio)
@@ -1347,10 +1325,10 @@ def apd_abr_calculations(request):
     #print(total_incurred_factor,"total_incurred_factor values are",type(total_incurred_factor))
 
 #base rate-----------------------------------------------------------------------------------------------------------
-    sum_of_statedamount = get_sum_of_statedamount_by_quoteid_json(_quote_id)
-    tiv=sum_of_statedamount["sum"]
+    #sum_of_statedamount = get_sum_of_statedamount_by_quoteid_json(_quote_id)
+    #tiv=sum_of_statedamount["sum"]
     print(tiv,type(tiv),"the tiv value ")
-    factor = get_apd_base_rate_factor_json(sum_of_statedamount['sum'])
+    factor = get_apd_base_rate_factor_json(tiv)
     if factor==-1:
         base_rate_factor=1
     else:
